@@ -9,6 +9,7 @@ run_app:
 	wget -r http://127.0.0.1:8050/_dash-component-suites/dash/dcc/async-highlight.js
 	wget -r http://127.0.0.1:8050/_dash-component-suites/dash/dcc/async-markdown.js
 	wget -r http://127.0.0.1:8050/_dash-component-suites/dash/dcc/async-datepicker.js
+	wget -r http://127.0.0.1:8050/_dash-component-suites/dash/dcc/async-dropdown.js
 
 	wget -r http://127.0.0.1:8050/_dash-component-suites/dash/dash_table/async-table.js
 	wget -r http://127.0.0.1:8050/_dash-component-suites/dash/dash_table/async-highlight.js
@@ -16,8 +17,6 @@ run_app:
 	wget -r http://127.0.0.1:8050/_dash-component-suites/plotly/package_data/plotly.min.js
 
 	mv 127.0.0.1:8050 pages_files
-	ls -a pages_files
-	ls -a pages_files/assets
 
 	find pages_files -exec sed -i.bak 's|_dash-component-suites|algorithm-visualization\\/_dash-component-suites|g' {} \;
 	find pages_files -exec sed -i.bak 's|_dash-layout|algorithm-visualization/_dash-layout.json|g' {} \;
@@ -28,9 +27,8 @@ run_app:
 
 	mv pages_files/_dash-layout pages_files/_dash-layout.json
 	mv pages_files/_dash-dependencies pages_files/_dash-dependencies.json
-	mv assets/* pages_files/assets/
 
-	ps -C python -o pid= | xargs kill -9
+	ps | grep python | awk '{print $$1}' | xargs kill -9	
 
 clean_dirs:
 	ls
