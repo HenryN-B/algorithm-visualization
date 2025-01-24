@@ -7,8 +7,8 @@ import numpy as np
 app = dash.Dash(__name__)
 
 # Sample data
-values1 = np.random.randint(10, 100, size=4)
-values2 = np.random.randint(10, 100, size=4)
+values1 = np.random.randint(10, 100, size=100)
+values2 = np.random.randint(10, 100, size=100)
 
 # App layout
 app.layout = html.Div([
