@@ -122,7 +122,7 @@ def get_click(graph_figure, clickData):
         for i in set:
             pX.append(i[0])
             pY.append(i[1])
-        fig.add_scatter(x=newx, y=newy, mode='lines+markers')
+        # fig.add_scatter(x=newx, y=newy, mode='lines+markers')
 
         # update figure data (in this case it's the last trace)
         graph_figure['data'][1].update(x=newx)
