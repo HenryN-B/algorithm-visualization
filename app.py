@@ -7,31 +7,34 @@ import numpy as np
 app = dash.Dash(__name__)
 
 # Sample data
-values1 = np.random.randint(10, 100, size=100)
-values2 = np.random.randint(10, 100, size=100)
+num = 100
+range = 100
+values = []
+for x in num:
+    values.append([np.random.randint(0, range), np.random.randint(0, range)])
 
 # App layout
 app.layout = html.Div([
     dcc.Graph(id='scatter-plot'),
-    dcc.Store(id='bar-data', data={'values1': list(values1), 'values2': list(values2)})
+    dcc.Store(id='bar-data', data={'values': list(values)})
 ])
 
 # Client-side callback (JavaScript function)
 app.clientside_callback(
     """
     function(chartType, data) {
-        var values1 = data.values1;
-        var values2 = data.values2;
+        var values = data.values;
 
         var barmode = chartType === 'scatter';
 
         return {
             'data': [
                 {
-                    'x': values1,
-                    'y': values2,
-                    'type': 'point',
-                    'name': 'Series 1'
+                    datasets: [{
+                    pointRadius: 4,
+                    pointBackgroundColor: "rgba(0,0,255,1)",
+                    data: values
+                    }]
                 },
             ],
             'layout': {
