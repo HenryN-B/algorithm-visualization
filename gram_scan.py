@@ -1,6 +1,6 @@
 import random
-from matplotlib import pyplot as plt
 import math
+import plotly.graph_objects as go
 
 def bottom_most(points):
     lowest = points[0]
@@ -23,11 +23,11 @@ def sort_points_counterclockwise(points):
     sorted_points = sorted(points, key=angle_from_bottom_most)
     return sorted_points
 
-def random_points(n):
+def random_points(n, s):
     pts = []
     while len(pts) < n :
-        x = random.randint(1,100)
-        y = random.randint(1,100)
+        x = random.random() * s
+        y = random.random() * s
         new_point = (x, y)
         pts.append(new_point)
     return pts 
@@ -40,9 +40,31 @@ def left_of(a,b,c):
         return False
 
 def graham_scan(pts):
+    pts = sort_points_counterclockwise(pts)
     hull = [pts[0],pts[1]]
     for point in pts[2:]:
         while len(hull) > 1 and not left_of(point, hull[-2], hull[-1]):
             hull.pop()
         hull.append(point)
     return hull
+
+set = random_points(100, 100)
+hull = graham_scan(set)
+x = []
+y = []
+for i in hull:
+    x.append(i[0])
+    y.append(i[1])
+x.append(hull[0][0])
+y.append(hull[0][1])
+pX = []
+pY = []
+for i in set:
+    pX.append(i[0])
+    pY.append(i[1])
+
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers'))
+fig.add_trace(go.Scatter(x=pX, y=pY, mode='markers'))
+fig.show()
+    
