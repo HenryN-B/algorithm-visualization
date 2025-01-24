@@ -8,10 +8,10 @@ app = dash.Dash(__name__)
 
 # Sample data
 num = 100
-range = 100
+size = 100
 values = []
-for x in range(100):
-    values.append([np.random.randint(0, range), np.random.randint(0, range)])
+for x in range(num):
+    values.append([np.random.randint(0, size), np.random.randint(0, size)])
 
 # App layout
 app.layout = html.Div([
