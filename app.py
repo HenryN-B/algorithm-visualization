@@ -10,7 +10,7 @@ app = dash.Dash(__name__)
 num = 100
 range = 100
 values = []
-for x in range(num):
+for x in range(100):
     values.append([np.random.randint(0, range), np.random.randint(0, range)])
 
 # App layout
