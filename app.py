@@ -9,19 +9,6 @@ import plotly.express as px
 import numpy as np
 import gram_scan as gs
 
-
-# create image and plotly express object
-# fig = px.imshow(
-#     np.zeros(shape=(90, 160, 4))
-# )
-# fig.add_scatter(
-#     x=[5, 20, 50],
-#     y=[5, 20, 50],
-#     mode='markers',
-#     marker_color='white',
-#     marker_size=10
-# )
-
 set = gs.random_points(100, 100)
 hull = gs.graham_scan(set)
 x = []
@@ -38,14 +25,15 @@ for i in set:
     pY.append(i[1])
 
 fig = px.imshow(np.zeros(shape=(100, 100, 4)), origin='lower')
-fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers'))
-fig.add_trace(go.Scatter(x=pX, y=pY, mode='markers'))
+fig.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
+fig.add_scatter(x=pX, y=pY, mode='markers',marker_color='white',marker_size=4)
 
 # update layout
 fig.update_layout(
     template='plotly_dark',
     plot_bgcolor='rgba(0, 0, 0, 0)',
     paper_bgcolor='rgba(0, 0, 0, 0)',
+    hoverdistance=1,
     width=700,
     height=500,
     margin={
@@ -87,21 +75,6 @@ app.layout = dbc.Container(
                 width={'size': 5, 'offset': 0}
             ), justify='around'
         ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        html.A(
-                            html.Button(
-                                'Refresh Page',
-                                id='refresh_button'
-                            ),
-                            href='/'
-                        ),
-                    ], width={'size': 5, 'offset': 0}
-                ),
-            ], justify='around'
-        )
     ], fluid=True
 )
 
@@ -120,13 +93,27 @@ def get_click(graph_figure, clickData):
         y = points.get('y')
 
         # get scatter trace (in this case it's the last trace)
-        scatter_x, scatter_y = [graph_figure['data'][1].get(coords) for coords in ['x', 'y']]
-        scatter_x.append(x)
-        scatter_y.append(y)
+        set.append([x,y])
+        hull = gs.graham_scan(set)
+        newx = []
+        newy = []
+        for i in hull:
+            newx.append(i[0])
+            newy.append(i[1])
+        newx.append(hull[0][0])
+        newy.append(hull[0][1])
+        pX = []
+        pY = []
+        for i in set:
+            pX.append(i[0])
+            pY.append(i[1])
+        fig.add_scatter(x=newx, y=newy, mode='lines+markers')
 
         # update figure data (in this case it's the last trace)
-        graph_figure['data'][1].update(x=scatter_x)
-        graph_figure['data'][1].update(y=scatter_y)
+        graph_figure['data'][1].update(x=newx)
+        graph_figure['data'][1].update(y=newy)
+        graph_figure['data'][2].update(y=pY)
+        graph_figure['data'][2].update(x=pX)
 
     return graph_figure
 
