@@ -48,23 +48,23 @@ def graham_scan(pts):
         hull.append(point)
     return hull
 
-set = random_points(100, 100)
-hull = graham_scan(set)
-x = []
-y = []
-for i in hull:
-    x.append(i[0])
-    y.append(i[1])
-x.append(hull[0][0])
-y.append(hull[0][1])
-pX = []
-pY = []
-for i in set:
-    pX.append(i[0])
-    pY.append(i[1])
+# set = random_points(100, 100)
+# hull = graham_scan(set)
+# x = []
+# y = []
+# for i in hull:
+#     x.append(i[0])
+#     y.append(i[1])
+# x.append(hull[0][0])
+# y.append(hull[0][1])
+# pX = []
+# pY = []
+# for i in set:
+#     pX.append(i[0])
+#     pY.append(i[1])
 
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers'))
-fig.add_trace(go.Scatter(x=pX, y=pY, mode='markers'))
-fig.show()
+# fig = go.Figure()
+# fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers'))
+# fig.add_trace(go.Scatter(x=pX, y=pY, mode='markers'))
+# fig.show()
     

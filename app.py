@@ -1,22 +1,45 @@
 import json
-
+import random
+import math
+import plotly.graph_objects as go
 from dash import Dash, dcc, html, Input, Output, State
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 import plotly.express as px
 import numpy as np
+import gram_scan as gs
+
 
 # create image and plotly express object
-fig = px.imshow(
-    np.zeros(shape=(90, 160, 4))
-)
-fig.add_scatter(
-    x=[5, 20, 50],
-    y=[5, 20, 50],
-    mode='markers',
-    marker_color='white',
-    marker_size=10
-)
+# fig = px.imshow(
+#     np.zeros(shape=(90, 160, 4))
+# )
+# fig.add_scatter(
+#     x=[5, 20, 50],
+#     y=[5, 20, 50],
+#     mode='markers',
+#     marker_color='white',
+#     marker_size=10
+# )
+
+set = gs.random_points(100, 100)
+hull = gs.graham_scan(set)
+x = []
+y = []
+for i in hull:
+    x.append(i[0])
+    y.append(i[1])
+x.append(hull[0][0])
+y.append(hull[0][1])
+pX = []
+pY = []
+for i in set:
+    pX.append(i[0])
+    pY.append(i[1])
+
+fig = px.imshow(np.zeros(shape=(100, 100, 4)), origin='lower')
+fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers'))
+fig.add_trace(go.Scatter(x=pX, y=pY, mode='markers'))
 
 # update layout
 fig.update_layout(
