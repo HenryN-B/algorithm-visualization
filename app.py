@@ -8,9 +8,14 @@ from dash.exceptions import PreventUpdate
 import plotly.express as px
 import numpy as np
 import gram_scan as gs
+import time
 
 set = gs.random_points(100, 100)
+
+start_time = time.perf_counter()
 hull = gs.graham_scan(set)
+end_time = time.perf_counter()
+total_time = end_time-start_time
 x = []
 y = []
 for i in hull:
@@ -24,7 +29,7 @@ for i in set:
     pX.append(i[0])
     pY.append(i[1])
 
-fig = px.imshow(np.zeros(shape=(100, 100, 4)), origin='lower')
+fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
 fig.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
 fig.add_scatter(x=pX, y=pY, mode='markers',marker_color='white',marker_size=4)
 
@@ -75,6 +80,16 @@ app.layout = dbc.Container(
                 width={'size': 5, 'offset': 0}
             ), justify='around'
         ),
+        dbc.Row(
+            dbc.Col(
+                html.Div(
+                    id='runtime_display',  
+                    children= f"Runtime for Gram Scan: {total_time*1000} milliseconds",
+                    style={'textAlign': 'center', 'marginTop': '10px'}
+                ),
+                width={'size': 5, 'offset': 0}
+            ), justify='around'
+        )
     ], fluid=True
 )
 
