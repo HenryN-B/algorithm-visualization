@@ -109,7 +109,6 @@ app.layout = dbc.Container(
                         "Re-run with New Points",
                         id='rerun-button',
                         color='primary',
-                        className='shadow-sm my-3',  
                         n_clicks=0
                     ),
                     # Runtime 
@@ -117,29 +116,44 @@ app.layout = dbc.Container(
                         dbc.CardBody(
                             [
                                 html.P(
-                                    f"Runtime: {total_time*1000:.2f} ms",
+                                    f"Runtime: {total_time*1000:.4f} ms",
                                     className="card-text",
                                     style={
-                                        'textAlign': 'left',  
-                                        'fontSize': '20px'  
+                                        'textAlign': 'center',  
+                                        'fontSize': '20px', 
+                                        'padding': "0px"
                                     }
                                 )
-                            ]
+                            ],
+                                style={
+                                    'padding': '0px', 
+                                    'width': '250px',
+                                    'height': '40px'
+                                    
+                                }
                         ),
-                        className="shadow-sm mt-3", 
                         style={
-                            'padding': '5px', 
-                            'width': '250px'
+                            'padding': '0px', 
+                            'width': '250px',
+                            'height': '40px'
                         }
                     )
                 ],
-                width=8  
+                style={
+                    "justify-content": 'space-evenly',
+                }
             ),
-            justify='center',   
+            style = {
+                "justify-content": 'space-evenly',
+            }
+              
         )
     ],
     fluid=True,
-    className="px-4 py-3"
+    style = {
+        "width": "100%",
+        "height": "100vh"
+    }
 )
 
 @ app.callback(
