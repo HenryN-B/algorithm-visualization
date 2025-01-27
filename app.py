@@ -18,8 +18,6 @@ pts = []
 def graham_scan(set):
     start_time = time.perf_counter()
     hull, pts, num = gs.graham_scan(set)
-    for x in range(num, len(pts)):
-        hull, pts, num = gs.next(hull, pts, num)
     end_time = time.perf_counter()
     total_time = end_time-start_time
     x = []
@@ -172,9 +170,7 @@ app.layout = dbc.Container(
     Input('graph', 'clickData')
 )
 def get_click(graph_figure, clickData):
-    if not clickData:
-        raise PreventUpdate
-    else:
+    if clickData:
         points = clickData.get('points')[0]
         x = points.get('x')
         y = points.get('y')
