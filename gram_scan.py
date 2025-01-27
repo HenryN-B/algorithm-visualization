@@ -39,11 +39,15 @@ def left_of(a,b,c):
     elif q <= 0:
         return False
 
+def next(hull, pts, num):
+    point = pts[num]
+    while len(hull) > 1 and not left_of(point, hull[-2], hull[-1]):
+        hull.pop()
+    hull.append(point)
+    return hull,pts, num + 1
+
 def graham_scan(pts):
     pts = sort_points_counterclockwise(pts)
     hull = [pts[0],pts[1]]
-    for point in pts[2:]:
-        while len(hull) > 1 and not left_of(point, hull[-2], hull[-1]):
-            hull.pop()
-        hull.append(point)
-    return hull
+    return next(hull, pts, 2)
+    
