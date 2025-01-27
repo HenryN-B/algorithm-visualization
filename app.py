@@ -11,11 +11,16 @@ import gram_scan as gs
 import time
 import naive_hull as nh
 
-
+total_time = 0
+num = 0
+hull = []
+pts = []
 
 def graham_scan(set):
     start_time = time.perf_counter()
-    hull = gs.graham_scan(set)
+    hull, pts, num = gs.graham_scan(set)
+    for x in range(num, len(pts)):
+        hull, pts, num = gs.next(hull, pts, num)
     end_time = time.perf_counter()
     total_time = end_time-start_time
     x = []
@@ -55,7 +60,6 @@ def naive(set):
 def update_graham_scan(set,x,y):
     set.append([x,y])
     start_time = time.perf_counter()
-    hull = gs.graham_scan(set)
     end_time = time.perf_counter()
     total_time = end_time-start_time
     newx = []
@@ -134,6 +138,12 @@ app.layout = dbc.Container(
                         color='primary',
                         n_clicks=0
                     ),
+                    dbc.Button(
+                        "Next",
+                        id='next-button',
+                        color='primary',
+                        n_clicks=0
+                    ),
                     # Runtime 
                     dbc.Card(
                         dbc.CardBody(
@@ -197,14 +207,20 @@ def get_click(graph_figure, clickData):
         
         # fig.add_scatter(x=newx, y=newy, mode='lines+markers')
         # update figure data (in this case it's the last trace)
-        graph_figure['data'][1].update(x=newx)
-        graph_figure['data'][1].update(y=newy)
+        # graph_figure['data'][1].update(x=newx)
+        # graph_figure['data'][1].update(y=newy)
         graph_figure['data'][2].update(y=pY)
         graph_figure['data'][2].update(x=pX)
         runtime_text = f"Runtime: {total_time*1000:.4f} ms"
 
     return graph_figure
 
+def on_button_click(graph_figure):
+    hull, pts, num = gs.next(hull, pts, num)
+    newx, newy, pX, pY,total_time = update_graham_scan(set,x,y)
+    graph_figure['data'][1].update(x=newx)
+    graph_figure['data'][1].update(y=newy)
+    return graph_figure
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8053)
