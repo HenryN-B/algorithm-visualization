@@ -47,3 +47,18 @@ def graham_scan(pts):
             hull.pop()
         hull.append(point)
     return hull
+
+def gift_wrap(pts):
+    pts = sort_points_counterclockwise(pts)
+    hull = [pts[0],pts[1]] 
+    hull_incrementor = len(hull)
+    for point in pts[2:]:
+        if left_of(point, hull[-hull_incrementor], hull[-hull_incrementor + 1]):
+            hull_incrementor = hull_incrementor + 1
+            hull.append(point)
+
+    return hull
+
+#pts_test=[[2.1,0.3],[4,4.2],[0,5],[0.1,0.2]]
+
+#print(gift_wrap(pts_test))
