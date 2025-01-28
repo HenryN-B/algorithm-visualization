@@ -62,6 +62,7 @@ def naive(set):
 def update_graham_scan(set,x,y):
     set.append([x,y])
     start_time = time.perf_counter()
+    hull = gs.gs_complete(set)
     end_time = time.perf_counter()
     total_time = end_time-start_time
     newx = []
@@ -204,15 +205,17 @@ def get_click(graph_figure, clickData, n_clicks):
     global pts
     global num
     ctx = callback_context
-    if clickData:
+    if clickData and ctx.triggered_id == 'graph':
         points = clickData.get('points')[0]
         x = points.get('x')
         y = points.get('y')
-        newx, newy, pX, pY, total_time = update_graham_scan(set,x,y)
+        newx, newy, pX, pY, total_time = update_graham_scan(pts, x, y)
+        graph_figure['data'][1].update(x=newx)
+        graph_figure['data'][1].update(y=newy)
         graph_figure['data'][2].update(y=pY)
         graph_figure['data'][2].update(x=pX)
         runtime_text = f"Runtime: {total_time*1000:.4f} ms"
-    elif ctx.triggered:
+    elif ctx.triggered_id == 'next-button':
         hull, pts, num = gs.next(hull, pts, num)
         newx = []
         newy = []
