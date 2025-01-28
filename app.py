@@ -39,15 +39,15 @@ def graham_scan(set):
     return hull, total_time, x, y, pX, pY
 
 def naive(set):
-    global hull
+    global hull_naive
     start_time = time.perf_counter()
-    hull = nh.naive_hull(set)
+    hull_naive = nh.naive_hull(set)
     end_time = time.perf_counter()
     total_time = end_time-start_time
-    hull = nh.sort_points_counterclockwise(hull)
+    hull_naive = nh.sort_points_counterclockwise(hull)
     x = []
     y = []
-    for i in hull:
+    for i in hull_naive:
         x.append(i[0])
         y.append(i[1])
     x.append(hull[0][0])
@@ -57,7 +57,7 @@ def naive(set):
     for i in set:
         pX.append(i[0])
         pY.append(i[1])
-    return hull, total_time, x, y, pX, pY
+    return hull_naive, total_time, x, y, pX, pY
 
 def update_graham_scan(set,x,y):
     set.append([x,y])
@@ -108,6 +108,33 @@ fig.update_layout(
 # hide color bar
 fig.update_coloraxes(showscale=False)
 
+set2 = gs.random_points(100,100)
+hull_naive, total_time2, x2, y2, pX2, pY2 = naive(set2)
+
+
+fig2 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
+fig2.add_scatter(x=x2, y=y2, mode='lines+markers',marker_color='white',marker_size=8)
+fig2.add_scatter(x=pX2, y=pY2, mode='markers',marker_color='white',marker_size=4)
+
+# update layout
+fig2.update_layout(
+    template='plotly_dark',
+    plot_bgcolor='rgba(0, 0, 0, 0)',
+    paper_bgcolor='rgba(0, 0, 0, 0)',
+    hoverdistance=1,
+    width=700,
+    height=500,
+    margin={
+        'l': 0,
+        'r': 0,
+        't': 20,
+        'b': 0,
+    }
+)
+
+# hide color bar
+fig2.update_coloraxes(showscale=False)
+
 # Build App
 app = Dash(
     __name__,
@@ -125,71 +152,127 @@ server = app.server
 app.layout = dbc.Container(
     [
         dbc.Row(
-            dbc.Col(
-                [
-                    # really cool graph
-                    dcc.Graph(
-                        id='graph',
-                        figure=fig,
-                        config={
-                            'scrollZoom': True,
-                            'displayModeBar': False,
-                        }
-                    ),
-                    # Button
-                    dbc.Button(
-                        "Re-run with New Points",
-                        id='rerun-button',
-                        color='primary',
-                        n_clicks=0
-                    ),
-                    dbc.Button(
-                        "Next",
-                        id='next-button',
-                        color='primary',
-                        n_clicks=0
-                    ),
-                    # Runtime 
-                    dbc.Card(
-                        dbc.CardBody(
-                            [
-                                html.P(
-                                    id="runtime-text",
-                                    children = f"Runtime: {total_time*1000:.4f} ms",
-                                    className="card-text",
-                                    style={
-                                        'textAlign': 'center',  
-                                        'fontSize': '20px', 
-                                        'padding': "0px"
-                                    }
-                                )
-                            ],
+            [
+                dbc.Col(
+                    [
+                        # really cool graph
+                        dcc.Graph(
+                            id='graph',  
+                            figure=fig,
+                            config={
+                                'scrollZoom': True,
+                                'displayModeBar': False,
+                            }
+                        ),
+                        # Button
+                        dbc.Button(
+                            "Re-run with New Points",
+                            id='rerun-button', 
+                            color='primary',
+                            n_clicks=0
+                        ),
+                        dbc.Button(
+                            "Next",
+                            id='next-button',
+                            color='primary',
+                            n_clicks=0
+                        ),
+                        # Runtime 
+                        dbc.Card(
+                            dbc.CardBody(
+                                [
+                                    html.P(
+                                        id="runtime-text",  
+                                        children=f"Runtime: {total_time * 1000:.4f} ms",
+                                        className="card-text",
+                                        style={
+                                            'textAlign': 'center',  
+                                            'fontSize': '20px', 
+                                            'padding': "0px"
+                                        }
+                                    )
+                                ],
                                 style={
                                     'padding': '0px', 
                                     'width': '250px',
                                     'height': '40px'
-                                    
                                 }
+                            ),
+                            style={
+                                'padding': '0px', 
+                                'width': '250px',
+                                'height': '40px'
+                            }
+                        )
+                    ],
+                    style={
+                        "justify-content": 'space-evenly',
+                    }
+                ),
+                dbc.Col(
+                    [
+                        # really cool graph
+                        dcc.Graph(
+                            id='graph-2',  
+                            figure=fig2,
+                            config={
+                                'scrollZoom': True,
+                                'displayModeBar': False,
+                            }
                         ),
-                        style={
-                            'padding': '0px', 
-                            'width': '250px',
-                            'height': '40px'
-                        }
-                    )
-                ],
-                style={
-                    "justify-content": 'space-evenly',
-                }
-            ),
-            style = {
+                        # Button
+                        dbc.Button(
+                            "Re-run with New Points",
+                            id='rerun-button-2', 
+                            color='primary',
+                            n_clicks=0
+                        ),
+                        dbc.Button(
+                            "Next",
+                            id='next-button-2', 
+                            color='primary',
+                            n_clicks=0
+                        ),
+                        # Runtime 
+                        dbc.Card(
+                            dbc.CardBody(
+                                [
+                                    html.P(
+                                        id="runtime-text-2",  
+                                        children=f"Runtime: {total_time2 * 1000:.4f} ms",
+                                        className="card-text",
+                                        style={
+                                            'textAlign': 'center',  
+                                            'fontSize': '20px', 
+                                            'padding': "0px"
+                                        }
+                                    )
+                                ],
+                                style={
+                                    'padding': '0px', 
+                                    'width': '250px',
+                                    'height': '40px'
+                                }
+                            ),
+                            style={
+                                'padding': '0px', 
+                                'width': '250px',
+                                'height': '40px'
+                            }
+                        )
+                    ],
+                    style={
+                        "justify-content": 'space-evenly',
+                    }
+                )
+            ],
+            style={
                 "justify-content": 'space-evenly',
             }
-              
         )
     ],
     fluid=True,
-    style = {
+    style={
         "width": "100%",
         "height": "100vh"
     }
