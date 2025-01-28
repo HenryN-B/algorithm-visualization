@@ -44,14 +44,14 @@ def naive(set):
     hull_naive = nh.naive_hull(set)
     end_time = time.perf_counter()
     total_time = end_time-start_time
-    hull_naive = nh.sort_points_counterclockwise(hull)
+    hull_naive = nh.sort_points_counterclockwise(hull_naive)
     x = []
     y = []
     for i in hull_naive:
         x.append(i[0])
         y.append(i[1])
-    x.append(hull[0][0])
-    y.append(hull[0][1])
+    x.append(hull_naive[0][0])
+    y.append(hull_naive[0][1])
     pX = []
     pY = []
     for i in set:
@@ -299,7 +299,6 @@ def get_click(graph_figure, clickData, n_clicks):
         graph_figure['data'][1].update(y=newy)
         graph_figure['data'][2].update(y=pY)
         graph_figure['data'][2].update(x=pX)
-        runtime_text = f"Runtime: {total_time*1000:.4f} ms"
     elif ctx.triggered_id == 'next-button':
         hull, pts, num = gs.next(hull, pts, num)
         newx = []
