@@ -2,7 +2,7 @@ import json
 import random
 import math
 import plotly.graph_objects as go
-from dash import Dash, dcc, html, Input, Output, State
+from dash import Dash, dcc, html, Input, callback_context, Output, State
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 import plotly.express as px
@@ -12,11 +12,14 @@ import time
 import naive_hull as nh
 
 total_time = 0
-num = 0
+num = 0 
 hull = []
 pts = []
 
 def graham_scan(set):
+    global hull
+    global pts
+    global num
     start_time = time.perf_counter()
     hull, pts, num = gs.graham_scan(set)
     end_time = time.perf_counter()
@@ -36,6 +39,7 @@ def graham_scan(set):
     return hull, total_time, x, y, pX, pY
 
 def naive(set):
+    global hull
     start_time = time.perf_counter()
     hull = nh.naive_hull(set)
     end_time = time.perf_counter()
@@ -189,33 +193,36 @@ app.layout = dbc.Container(
 )
 
 @ app.callback(
-    Output('graph', 'figure'),
+    Output('graph', 'figure', allow_duplicate=True),
     State('graph', 'figure'),
-    Input('graph', 'clickData')
+    Input('graph', 'clickData'),
+    Input('next-button', 'n_clicks'),
+    prevent_initial_call=True
 )
-def get_click(graph_figure, clickData):
+def get_click(graph_figure, clickData, n_clicks):
+    global hull
+    global pts
+    global num
+    ctx = callback_context
     if clickData:
         points = clickData.get('points')[0]
         x = points.get('x')
         y = points.get('y')
-        # get scatter trace (in this case it's the last trace)
         newx, newy, pX, pY, total_time = update_graham_scan(set,x,y)
-        
-        # fig.add_scatter(x=newx, y=newy, mode='lines+markers')
-        # update figure data (in this case it's the last trace)
-        # graph_figure['data'][1].update(x=newx)
-        # graph_figure['data'][1].update(y=newy)
         graph_figure['data'][2].update(y=pY)
         graph_figure['data'][2].update(x=pX)
         runtime_text = f"Runtime: {total_time*1000:.4f} ms"
-
-    return graph_figure
-
-def on_button_click(graph_figure):
-    hull, pts, num = gs.next(hull, pts, num)
-    newx, newy, pX, pY,total_time = update_graham_scan(set,x,y)
-    graph_figure['data'][1].update(x=newx)
-    graph_figure['data'][1].update(y=newy)
+    elif ctx.triggered:
+        hull, pts, num = gs.next(hull, pts, num)
+        newx = []
+        newy = []
+        for i in hull:
+            newx.append(i[0])
+            newy.append(i[1])
+        newx.append(hull[0][0])
+        newy.append(hull[0][1])
+        graph_figure['data'][1].update(x=newx)
+        graph_figure['data'][1].update(y=newy)
     return graph_figure
 
 if __name__ == '__main__':
