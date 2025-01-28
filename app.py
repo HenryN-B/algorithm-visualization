@@ -120,6 +120,8 @@ app = Dash(
     ]
 )
 
+server = app.server
+
 app.layout = dbc.Container(
     [
         dbc.Row(
