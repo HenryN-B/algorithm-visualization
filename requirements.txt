@@ -3,4 +3,5 @@ dash_bootstrap_components==1.7.1
 matplotlib==3.10.0
 numpy==2.2.2
 plotly==5.24.1
+pandas
 gunicorn
