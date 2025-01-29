@@ -223,7 +223,7 @@ app.layout = dbc.Container(
                         # Button
                         dbc.Button(
                             "Re-run with New Points",
-                            id='rerun-button-2', 
+                            id='rerun-button-naive', 
                             color='primary',
                             n_clicks=0
                         ),
@@ -238,7 +238,7 @@ app.layout = dbc.Container(
                             dbc.CardBody(
                                 [
                                     html.P(
-                                        id="runtime-text-2",  
+                                        id="runtime-text-naive",  
                                         children=f"Runtime: {total_time2 * 1000:.4f} ms",
                                         className="card-text",
                                         style={
@@ -348,6 +348,42 @@ def rerun_graham_scan(n_clicks):
     return fig, runtime_text
 
 
+@app.callback(
+    [Output('graph-2', 'figure'),
+     Output('runtime-text-naive', 'children')],
+    Input('rerun-button-naive', 'n_clicks'),
+    prevent_initial_call=True
+)
+def rerun_naive(n_clicks):
+    set = gs.random_points(100, 100)
+    hull_naive, total_time, x, y, pX, pY = naive(set)
+    
+    fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
+    fig.add_scatter(x=x, y=y, mode='lines+markers', marker_color='white', marker_size=8)
+    fig.add_scatter(x=pX, y=pY, mode='markers', marker_color='white', marker_size=4)
+    
+    fig.update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        hoverdistance=1,
+        width=700,
+        height=500,
+        margin={
+            'l': 0,
+            'r': 0,
+            't': 20,
+            'b': 0,
+        }
+    )
+    
+    fig.update_coloraxes(showscale=False)
+    
+    runtime_text = f"Runtime: {total_time * 1000:.4f} ms"
+    
+    return fig, runtime_text
+
+
 
 @app.callback(
     Output('graph-2', 'figure', allow_duplicate=True),
@@ -357,7 +393,6 @@ def rerun_graham_scan(n_clicks):
     prevent_initial_call=True
 )
 def get_click_2(graph_figure, clickData, n_clicks):
-    # Implement logic similar to `get_click` for the second graph
     pass
 
 if __name__ == '__main__':
