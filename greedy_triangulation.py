@@ -56,11 +56,11 @@ def greedyTriangulationAlgorithm(points):
         foundIntersection = False
         for j in range(len(triangulation)):
             if intersectQuerie(edgeList[i][0],edgeList[i][1],triangulation[j][0],triangulation[j][1]):
-                print("intersection")
+                #print("intersection")
                 foundIntersection = True
                 break
         if not foundIntersection:
-            print("noncrossing")
+            #print("noncrossing")
             triangulation.append(edgeList[i])
     return triangulation
 
