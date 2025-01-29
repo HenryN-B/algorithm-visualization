@@ -307,9 +307,11 @@ def handle_next_button(graph_figure, n_clicks):
     global pts
     global num
     global graham_scan_done
-    if graham_scan_done:
-        return graph_figure
     if n_clicks:
+        if graham_scan_done:
+            return graph_figure
+        if num == len(pts):
+            return graph_figure
         hull, pts, num = gs.next(hull, pts, num)
         newx = []
         newy = []
