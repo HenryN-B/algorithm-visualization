@@ -1,7 +1,6 @@
 import random
 import math
 import plotly.graph_objects as go
-import matplotlib.pyplot as plt
 
 def bottom_most(points):
     lowest = points[0]

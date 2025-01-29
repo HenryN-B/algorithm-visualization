@@ -1,8 +1,13 @@
+import random
+import gram_scan as gs
+import matplotlib.pyplot as plt
+
+
 def is_convex(a, b, c, d):
-    cross1 = left_of(a, b, c)
-    cross2 = left_of(b, c, d)
-    cross3 = left_of(c, d, a)
-    cross4 = left_of(d, a, b)
+    cross1 = gs.left_of(a, b, c)
+    cross2 = gs.left_of(b, c, d)
+    cross3 = gs.left_of(c, d, a)
+    cross4 = gs.left_of(d, a, b)
     return cross1 and cross2 and cross3 and cross4
 
 
@@ -14,8 +19,8 @@ def flip_edges(triangles):
             for j in range(i + 1, len(triangles)):
                 t1 = triangles[i]
                 t2 = triangles[j]
-                
-                for point in 
+                same = 
+                for point in t1
                 
                 same_edge = "temp"
                 if len(same_edge) == 2:
@@ -26,7 +31,7 @@ def flip_edges(triangles):
     return triangles
 
 def triangulate(pts):
-    pts = sort_points_counterclockwise(pts)
+    pts = gs.sort_points_counterclockwise(pts)
     hull = [pts[0], pts[1]]  
     triangles = []  
     for index,_ in enumerate(pts):
@@ -36,7 +41,7 @@ def triangulate(pts):
         triangles.append(triangle)
 
     for point in pts[2:]:
-        while len(hull) > 1 and not left_of(hull[-2], hull[-1], point):
+        while len(hull) > 1 and not gs.left_of(hull[-2], hull[-1], point):
             triangle = (hull[-2], hull[-1], point)
             triangles.append(triangle)
             hull.pop()  
@@ -47,7 +52,7 @@ def triangulate(pts):
     return triangles
 
 
-points = random_points(100,100)
+points = gs.random_points(100,100)
 triangles = triangulate(points)
 
 for triangle in triangles:
