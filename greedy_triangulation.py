@@ -18,6 +18,27 @@ def left_of(a,b,c):
     elif q <= 0:
         return False
 
+def greedyTriangulationAlgorithm(points):
+    triangulation = []
+    edgeList = []
+    num_vertices = len(points)
+    for i in range(num_vertices):        #this adds all possible unique edges to edgeList, and then it sorts them by their length
+        for j in range(i + 1, num_vertices):
+            if [points[i],points[j]] not in edgeList and [points[j],points[i]] not in edgeList:
+                edgeList.append([points[i],points[j]])
+    edgeList = sorted(edgeList, key=edgeLength)
+
+    for i in range(len(edgeList)):
+        for j in triangulation:
+            if i==0:
+                triangulation.append(edgeList(0))
+            elif not intersectQuerie(edgeList[i][0],edgeList[i][1],triangulation[j][0],triangulation[j][1]):
+                triangulation.append(edgeList(i))
+    return triangulation
+
+def edgeLength(edge):
+    return math.dist(edge[0], edge[1])
+
 def intersectQuerie(a,b,s,t):
     a_left_of_st = left_of([s[0],s[1]],[t[0],t[1]],[a[0],a[1]])
     b_left_of_st = left_of([s[0],s[1]],[t[0],t[1]],[b[0],b[1]])
@@ -29,10 +50,6 @@ def intersectQuerie(a,b,s,t):
     
     return False    #returns false if the lines don't intersect
 
-#def greedyTriangulationAlgorithm(points):
-#    triangulationEdges = [[[],[]]]
-#    numVertices = len(points)
-#    for i in numVertices:
 
 
-print(intersectQuerie([0,0],[1,1],[1,0],[0,1]))
+print(greedyTriangulationAlgorithm([[0,0],[1,1],[1,0],[0,1]]))
