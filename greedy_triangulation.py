@@ -24,15 +24,15 @@ def intersectQuerie(a,b,s,t):
     s_left_of_ab = left_of([a[0],a[1]],[b[0],b[1]],[s[0],s[1]])
     t_left_of_ab = left_of([a[0],a[1]],[b[0],b[1]],[t[0],t[1]])
     #st and ab only intersect if this is a and b are on opposite sides of st and s and t are on opposite sides of ab
-    if a_left_of_st != b_left_of_st and s_left_of_st != t_left_of_ab: 
+    if a_left_of_st != b_left_of_st and s_left_of_ab != t_left_of_ab: 
         return True
     
     return False    #returns false if the lines don't intersect
 
-def greedyTriangulationAlgorithm(points):
-    triangulationEdges = [[[],[]]]
-    numVertices = len(points)
-    for i in numVertices:
+#def greedyTriangulationAlgorithm(points):
+#    triangulationEdges = [[[],[]]]
+#    numVertices = len(points)
+#    for i in numVertices:
 
 
-    
+print(intersectQuerie([0,0],[1,1],[1,0],[0,1]))
