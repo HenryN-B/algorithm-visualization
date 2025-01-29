@@ -203,7 +203,8 @@ app.layout = dbc.Container(
                                 'width': '250px',
                                 'height': '40px'
                             }
-                        )
+                        ),
+                        dcc.Store(id='hull-complete-store', data={'hull_complete': False})
                     ],
                     style={
                         "justify-content": 'space-evenly',
@@ -224,12 +225,6 @@ app.layout = dbc.Container(
                         dbc.Button(
                             "Re-run with New Points",
                             id='rerun-button-naive', 
-                            color='primary',
-                            n_clicks=0
-                        ),
-                        dbc.Button(
-                            "Next",
-                            id='next-button-2', 
                             color='primary',
                             n_clicks=0
                         ),
@@ -391,17 +386,6 @@ def rerun_naive(n_clicks):
     
     return fig, runtime_text
 
-
-
-@app.callback(
-    Output('graph-2', 'figure', allow_duplicate=True),
-    State('graph-2', 'figure'),
-    Input('graph-2', 'clickData'),
-    Input('next-button-2', 'n_clicks'),
-    prevent_initial_call=True
-)
-def get_click_2(graph_figure, clickData, n_clicks):
-    pass
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8053)
