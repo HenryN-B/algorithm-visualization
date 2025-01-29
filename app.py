@@ -157,7 +157,14 @@ app.layout = dbc.Container(
         dbc.Row(
             [
                 dbc.Col(
-                    [
+                    [   
+                        html.P(
+                            "Graham scan",
+                            style={
+                                'fontSize': '30px'
+                            }
+                            
+                        ),
                         # really cool graph
                         dcc.Graph(
                             id='graph',  
@@ -214,6 +221,13 @@ app.layout = dbc.Container(
                 ),
                 dbc.Col(
                     [
+                        html.P(
+                            "Naive scan",
+                            style={
+                                'fontSize': '30px'
+                            }
+                            
+                        ),
                         # really cool graph
                         dcc.Graph(
                             id='graph-2',  
