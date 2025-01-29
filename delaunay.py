@@ -19,14 +19,42 @@ def flip_edges(triangles):
             for j in range(i + 1, len(triangles)):
                 t1 = triangles[i]
                 t2 = triangles[j]
-                same = 
-                for point in t1
-                
-                same_edge = "temp"
-                if len(same_edge) == 2:
-                    a = same_edge
-                    if
-                    b = same_edge[1]
+                if t1 == t2:
+                    continue
+                same = 0
+                same_list = []
+                for point1 in t1:
+                    for point2 in t2:
+                        if point1 == point2:
+                            same_list.append(point1)
+                            same +=1
+                if same <= 2:
+                    continue
+                a = same_list[0]
+                b = []
+                c = same_list[1]
+                d = []
+                for point in t1:
+                    if point == (a or c):
+                        continue
+                    left = gs.left_of(a,c,point)
+                    if left == True:
+                        d = point
+                        for point2 in t2:
+                            if point2 == (a or c):
+                                continue
+                            b = point2
+                    else:
+                        b = point 
+                        for point2 in t2:
+                            if point2 == (a or c):
+                                continue
+                            d = point2
+                print(a,b,c,d)
+                if is_convex(a,b,c,d):
+                    print("convex")
+                            
+                    
                     
     return triangles
 
