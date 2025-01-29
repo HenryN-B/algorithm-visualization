@@ -1,15 +1,43 @@
 import random
 import gram_scan as gs
 import matplotlib.pyplot as plt
+import math
 
+
+def is_ccw(p1, p2, p3):
+
+    return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]) > 0
 
 def is_convex(a, b, c, d):
-    cross1 = gs.left_of(a, b, c)
-    cross2 = gs.left_of(b, c, d)
-    cross3 = gs.left_of(c, d, a)
-    cross4 = gs.left_of(d, a, b)
-    return cross1 and cross2 and cross3 and cross4
+    if not is_ccw(a, b, c):  
+        b, c = c, b 
+    if not is_ccw(c, d, a):  
+        d, a = a, d  
 
+    return gs.left_of(a, b, c) and gs.left_of(b, c, d) and gs.left_of(c, d, a) and gs.left_of(d, a, b)
+
+
+def angle(p1, p2, p3):
+    v1 = (p1[0] - p2[0], p1[1] - p2[1])
+    v2 = (p3[0] - p2[0], p3[1] - p2[1])
+
+    dot = v1[0] * v2[0] + v1[1] * v2[1]
+    norm1 = math.sqrt(v1[0]**2 + v1[1]**2)
+    norm2 = math.sqrt(v2[0]**2 + v2[1]**2)
+
+    if norm1 == 0 or norm2 == 0:
+        return 180 
+    cos_theta = max(-1, min(1, dot / (norm1 * norm2)))
+    return math.degrees(math.acos(cos_theta))
+
+def max_triangle_angle(triangle):
+    a, b, c = triangle
+    return max(angle(a, b, c), angle(b, c, a), angle(c, a, b))
+
+def should_flip(a, b, c, d):
+    before_flip = max(max_triangle_angle((a, b, c)), max_triangle_angle((a, c, d)))
+    after_flip = max(max_triangle_angle((a, b, d)), max_triangle_angle((b, c, d)))
+    return after_flip < before_flip
 
 def flip_edges(triangles):
     flipped = True
@@ -19,44 +47,32 @@ def flip_edges(triangles):
             for j in range(i + 1, len(triangles)):
                 t1 = triangles[i]
                 t2 = triangles[j]
-                if t1 == t2:
-                    continue
-                same = 0
-                same_list = []
-                for point1 in t1:
-                    for point2 in t2:
-                        if point1 == point2:
-                            same_list.append(point1)
-                            same +=1
-                if same <= 2:
-                    continue
-                a = same_list[0]
-                b = []
-                c = same_list[1]
-                d = []
-                for point in t1:
-                    if point == (a or c):
-                        continue
-                    left = gs.left_of(a,c,point)
-                    if left == True:
-                        d = point
-                        for point2 in t2:
-                            if point2 == (a or c):
-                                continue
-                            b = point2
-                    else:
-                        b = point 
-                        for point2 in t2:
-                            if point2 == (a or c):
-                                continue
-                            d = point2
-                print(a,b,c,d)
-                if is_convex(a,b,c,d):
-                    print("convex")
+
+                shared = list(set(t1) & set(t2))
+                if len(shared) != 2:
+                    continue  
+                
+                a, c = shared
+                unique_t1 = [p for p in t1 if p not in shared]
+                unique_t2 = [p for p in t2 if p not in shared]
+                
+                if len(unique_t1) != 1 or len(unique_t2) != 1:
+                    continue 
+                
+                b, d = unique_t1[0], unique_t2[0]
+                if is_convex(a, b, c, d) and should_flip(a, b, c, d):
+
+                    triangles[i] = (a, b, d)
+
+                    triangles[j] = (b, c, d) 
+
+                    flipped = True
+
+    return triangles
                             
                     
                     
-    return triangles
+  
 
 def triangulate(pts):
     pts = gs.sort_points_counterclockwise(pts)
@@ -74,16 +90,21 @@ def triangulate(pts):
             triangles.append(triangle)
             hull.pop()  
         hull.append(point)  
-    
-    triangles = flip_edges(triangles)
+    triangles_del = [t[:] for t in triangles]
+    triangles_del = flip_edges(triangles_del)
+    if triangles == triangles_del:
+        print("FUCK")
 
-    return triangles
+
+    return triangles, triangles_del
 
 
-points = gs.random_points(100,100)
-triangles = triangulate(points)
-
-for triangle in triangles:
+points = gs.random_points(30,100)
+triangulation, triangles_del= triangulate(points)
+fig, axs = plt.subplots(2, 1)
+if triangles_del == triangulation:
+    print("same")
+for triangle in triangulation:
     x = []
     y = []
     for point in triangle:
@@ -92,5 +113,17 @@ for triangle in triangles:
         y.append(point[1])
     x.append(triangle[0][0])
     y.append(triangle[0][1])
-    plt.plot(x,y)
+    axs[0].plot(x,y)
+    
+    
+for triangle in triangles_del:
+    x = []
+    y = []
+    for point in triangle:
+
+        x.append(point[0])
+        y.append(point[1])
+    x.append(triangle[0][0])
+    y.append(triangle[0][1])
+    axs[1].plot(x,y)
 plt.show()
