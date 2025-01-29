@@ -312,5 +312,53 @@ def get_click(graph_figure, clickData, n_clicks):
         graph_figure['data'][1].update(y=newy)
     return graph_figure
 
+@app.callback(
+    [Output('graph', 'figure'),
+     Output('runtime-text', 'children')],
+    Input('rerun-button', 'n_clicks'),
+    prevent_initial_call=True
+)
+def rerun_graham_scan(n_clicks):
+    set = gs.random_points(100, 100)
+    hull, total_time, x, y, pX, pY = graham_scan(set)
+    
+    fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
+    fig.add_scatter(x=x, y=y, mode='lines+markers', marker_color='white', marker_size=8)
+    fig.add_scatter(x=pX, y=pY, mode='markers', marker_color='white', marker_size=4)
+    
+    fig.update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        hoverdistance=1,
+        width=700,
+        height=500,
+        margin={
+            'l': 0,
+            'r': 0,
+            't': 20,
+            'b': 0,
+        }
+    )
+    
+    fig.update_coloraxes(showscale=False)
+    
+    runtime_text = f"Runtime: {total_time * 1000:.4f} ms"
+    
+    return fig, runtime_text
+
+
+
+@app.callback(
+    Output('graph-2', 'figure', allow_duplicate=True),
+    State('graph-2', 'figure'),
+    Input('graph-2', 'clickData'),
+    Input('next-button-2', 'n_clicks'),
+    prevent_initial_call=True
+)
+def get_click_2(graph_figure, clickData, n_clicks):
+    # Implement logic similar to `get_click` for the second graph
+    pass
+
 if __name__ == '__main__':
     app.run_server(debug=True, port=8053)
