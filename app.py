@@ -278,19 +278,15 @@ app.layout = dbc.Container(
     }
 )
 
-@ app.callback(
+@app.callback(
     Output('graph', 'figure', allow_duplicate=True),
     State('graph', 'figure'),
     Input('graph', 'clickData'),
-    Input('next-button', 'n_clicks'),
     prevent_initial_call=True
 )
-def get_click(graph_figure, clickData, n_clicks):
-    global hull
+def handle_click(graph_figure, clickData):
     global pts
-    global num
-    ctx = callback_context
-    if clickData and ctx.triggered_id == 'graph':
+    if clickData:
         points = clickData.get('points')[0]
         x = points.get('x')
         y = points.get('y')
@@ -299,7 +295,19 @@ def get_click(graph_figure, clickData, n_clicks):
         graph_figure['data'][1].update(y=newy)
         graph_figure['data'][2].update(y=pY)
         graph_figure['data'][2].update(x=pX)
-    elif ctx.triggered_id == 'next-button':
+    return graph_figure
+
+@app.callback(
+    Output('graph', 'figure', allow_duplicate=True),
+    State('graph', 'figure'),
+    Input('next-button', 'n_clicks'),
+    prevent_initial_call=True
+)
+def handle_next_button(graph_figure, n_clicks):
+    global hull
+    global pts
+    global num
+    if n_clicks:
         hull, pts, num = gs.next(hull, pts, num)
         newx = []
         newy = []
