@@ -33,6 +33,13 @@ def intersectQuerie(a,b,s,t):
     
     return False    #returns false if the lines don't intersect
 
+def totalEdgeLength(edgeList):  #this can be used to calculate the total weight of a set of edges. used for greedy triangulation.
+    total = 0
+    for i in range(len(edgeList)):
+        total += edgeLength(edgeList[i])
+    return total
+
+
 def greedyTriangulationAlgorithm(points):
     triangulation = []
     edgeList = []
@@ -58,6 +65,6 @@ def greedyTriangulationAlgorithm(points):
     return triangulation
 
 
-#print(greedyTriangulationAlgorithm([[0,0],[1,1],[1,0],[0,1]]))
+#print(totalEdgeLength(greedyTriangulationAlgorithm([[0,0],[1,1],[1,0],[0,1]])))
 
 #print(intersectQuerie([0,0],[1,0],[0,0],[1,1]))
