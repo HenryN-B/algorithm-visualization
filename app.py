@@ -643,12 +643,12 @@ def rerun_greedy(n_clicks):
 )
 def rerun_del(n_clicks):
     set5 = gs.random_points(100,100)
-    del_tri, total_time5 = delaunay(set)
-    fig5 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
+    del_tri, total_time5 = delaunay(set5)
+    fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
     for triangle in del_tri:
         x = [triangle[0][0],triangle[1][0],triangle[2][0]]
         y = [triangle[0][1],triangle[1][1],triangle[2][1]]
-        fig5.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
+        fig.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
 
 
     # update layout
