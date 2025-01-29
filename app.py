@@ -204,7 +204,6 @@ app.layout = dbc.Container(
                                 'height': '40px'
                             }
                         ),
-                        dcc.Store(id='hull-complete-store', data={'hull_complete': False})
                     ],
                     style={
                         "justify-content": 'space-evenly',
@@ -281,6 +280,7 @@ app.layout = dbc.Container(
 )
 def handle_click(graph_figure, clickData):
     global pts
+    global graham_scan_done
     if clickData:
         points = clickData.get('points')[0]
         x = points.get('x')
@@ -290,6 +290,7 @@ def handle_click(graph_figure, clickData):
         graph_figure['data'][1].update(y=newy)
         graph_figure['data'][2].update(y=pY)
         graph_figure['data'][2].update(x=pX)
+        graham_scan_done = True
     return graph_figure
 
 @app.callback(
@@ -302,6 +303,8 @@ def handle_next_button(graph_figure, n_clicks):
     global hull
     global pts
     global num
+    if graham_scan_done:
+        return
     if n_clicks:
         hull, pts, num = gs.next(hull, pts, num)
         newx = []
