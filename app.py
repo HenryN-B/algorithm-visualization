@@ -120,9 +120,9 @@ fig.update_layout(
 
 # hide color bar
 fig.update_coloraxes(showscale=False)
+fig.update_layout(showlegend=False)
 
-set2 = gs.random_points(100,100)
-hull_naive, total_time2, x2, y2, pX2, pY2 = naive(set2)
+hull_naive, total_time2, x2, y2, pX2, pY2 = naive(set)
 
 
 fig2 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
@@ -147,8 +147,8 @@ fig2.update_layout(
 
 # hide color bar
 fig2.update_coloraxes(showscale=False)
+fig2.update_layout(showlegend=False)
 
-set4 = gs.random_points(100,100)
 greedy_tri, total_time4 = greedy(set)
 
 
@@ -177,6 +177,7 @@ fig4.update_layout(
 
 # hide color bar
 fig4.update_coloraxes(showscale=False)
+fig4.update_layout(showlegend=False)
 
 # Build App
 app = Dash(
@@ -467,6 +468,7 @@ def rerun_graham_scan(n_clicks):
     )
     
     fig.update_coloraxes(showscale=False)
+    fig.update_layout(showlegend=False)
     
     runtime_text = f"Runtime: {total_time * 1000:.4f} ms"
     
@@ -503,6 +505,48 @@ def rerun_naive(n_clicks):
     )
     
     fig.update_coloraxes(showscale=False)
+    fig.update_layout(showlegend=False)
+    
+    runtime_text = f"Runtime: {total_time * 1000:.4f} ms"
+    
+    return fig, runtime_text
+
+
+@app.callback(
+    [Output('graph-4', 'figure'),
+     Output('runtime-text-greedy', 'children')],
+    Input('rerun-button-greedy', 'n_clicks'),
+    prevent_initial_call=True
+)
+def rerun_naive(n_clicks):
+    set4 = gs.random_points(100,100)
+    greedy_tri, total_time = greedy(set4)
+
+    fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
+
+    for line in greedy_tri:
+        x = [line[0][0],line[1][0]]
+        y = [line[0][1],line[1][1]]
+        fig.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
+
+    # update layout
+    fig.update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        hoverdistance=1,
+        width=700,
+        height=500,
+        margin={
+            'l': 0,
+            'r': 0,
+            't': 20,
+            'b': 0,
+        }
+    )
+
+    fig.update_coloraxes(showscale=False)
+    fig.update_layout(showlegend=False)
     
     runtime_text = f"Runtime: {total_time * 1000:.4f} ms"
     
