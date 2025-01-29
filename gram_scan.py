@@ -75,38 +75,3 @@ def gift_wrap(pts):
 #pts_test=[[2.1,0.3],[4,4.2],[0,5],[0.1,0.2]]
 
 #print(gift_wrap(pts_test))
-
-def triangulate(points):
-
-    convex_hull = gs_complete(points)
-    print(convex_hull)
-    pts = sort_points_counterclockwise(points)
-    hull = [pts[0],pts[1]]
-    for point in pts[2:]:
-        hull.append(points)
-    print(hull)
-    return hull,convex_hull
-    
-    
-
-
-# points = random_points(10,100)
-# inside_lines, hull = triangulate(points)
-# # print(hull)
-# x = []
-# y = []
-# for point in hull:
-#     x.append(point[0])
-#     y.append(hull[1])
-# x1 = []
-# y1 = []
-# for i in inside_lines:
-#     x1.append(i[0])
-#     y1.append(i[1])
-    
-# plt.plot(x,y)
-# plt.plot(x1,y1)
-
-# plt.show()
-
-

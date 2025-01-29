@@ -23,8 +23,9 @@ def graham_scan(set):
     global num
     global graham_scan_done
     graham_scan_done = False
-    start_time = time.perf_counter()
     hull, pts, num = gs.graham_scan(set)
+    start_time = time.perf_counter()
+    temp = gs.gs_complete(set)
     end_time = time.perf_counter()
     total_time = end_time-start_time
     x = []
