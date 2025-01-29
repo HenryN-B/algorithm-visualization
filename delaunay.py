@@ -1,6 +1,5 @@
 import random
 import gram_scan as gs
-import matplotlib.pyplot as plt
 import math
 
 
@@ -99,31 +98,3 @@ def triangulate(pts):
     return triangles, triangles_del
 
 
-points = gs.random_points(30,100)
-triangulation, triangles_del= triangulate(points)
-fig, axs = plt.subplots(2, 1)
-if triangles_del == triangulation:
-    print("same")
-for triangle in triangulation:
-    x = []
-    y = []
-    for point in triangle:
-
-        x.append(point[0])
-        y.append(point[1])
-    x.append(triangle[0][0])
-    y.append(triangle[0][1])
-    axs[0].plot(x,y)
-    
-    
-for triangle in triangles_del:
-    x = []
-    y = []
-    for point in triangle:
-
-        x.append(point[0])
-        y.append(point[1])
-    x.append(triangle[0][0])
-    y.append(triangle[0][1])
-    axs[1].plot(x,y)
-plt.show()

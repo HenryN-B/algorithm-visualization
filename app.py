@@ -11,6 +11,7 @@ import gram_scan as gs
 import time
 import naive_hull as nh
 import greedy_triangulation as gt
+import delaunay as d
 
 
 total_time = 0
@@ -92,6 +93,13 @@ def greedy(set):
 
     return greedy, total_time
 
+def delaunay(set):
+    start_time = time.perf_counter()
+    gram_tri, del_tri = d.triangulate(set)
+    end_time = time.perf_counter()
+    total_time = end_time-start_time
+
+    return del_tri, total_time
 
 
 set = gs.random_points(100, 100)
@@ -149,17 +157,13 @@ fig2.update_layout(
 fig2.update_coloraxes(showscale=False)
 fig2.update_layout(showlegend=False)
 
+#greedy 
 greedy_tri, total_time4 = greedy(set)
-
-
 fig4 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
-
 for line in greedy_tri:
     x = [line[0][0],line[1][0]]
     y = [line[0][1],line[1][1]]
     fig4.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
-
-# update layout
 fig4.update_layout(
     template='plotly_dark',
     plot_bgcolor='rgba(0, 0, 0, 0)',
@@ -174,10 +178,32 @@ fig4.update_layout(
         'b': 0,
     }
 )
-
-# hide color bar
 fig4.update_coloraxes(showscale=False)
 fig4.update_layout(showlegend=False)
+
+
+del_tri, total_time5 = delaunay(set)
+fig5 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
+for triangle in del_tri:
+    x = [triangle[0][0],triangle[1][0],triangle[2][0]]
+    y = [triangle[0][1],triangle[1][1],triangle[2][1]]
+    fig5.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
+fig5.update_layout(
+    template='plotly_dark',
+    plot_bgcolor='rgba(0, 0, 0, 0)',
+    paper_bgcolor='rgba(0, 0, 0, 0)',
+    hoverdistance=1,
+    width=700,
+    height=500,
+    margin={
+        'l': 0,
+        'r': 0,
+        't': 20,
+        'b': 0,
+    }
+)
+fig5.update_coloraxes(showscale=False)
+fig5.update_layout(showlegend=False)
 
 # Build App
 app = Dash(
@@ -373,6 +399,63 @@ app.layout = dbc.Container(
                     style={
                         "justify-content": 'space-evenly',
                     }
+                ),
+                    dbc.Col(
+                    [
+                        html.P(
+                            "Delaunay triangulation",
+                            style={
+                                'fontSize': '30px'
+                            }
+                            
+                        ),
+                        # really cool graph
+                        dcc.Graph(
+                            id='graph-5',  
+                            figure=fig5,
+                            config={
+                                'scrollZoom': True,
+                                'displayModeBar': False,
+                            }
+                        ),
+                        # Button
+                        dbc.Button(
+                            "Re-run with New Points",
+                            id='rerun-button-del', 
+                            color='primary',
+                            n_clicks=0
+                        ),
+                        # Runtime 
+                        dbc.Card(
+                            dbc.CardBody(
+                                [
+                                    html.P(
+                                        id="runtime-text-del",  
+                                        children=f"Runtime: {total_time5 * 1000:.4f} ms",
+                                        className="card-text",
+                                        style={
+                                            'textAlign': 'center',  
+                                            'fontSize': '20px', 
+                                            'padding': "0px"
+                                        }
+                                    )
+                                ],
+                                style={
+                                    'padding': '0px', 
+                                    'width': '250px',
+                                    'height': '40px'
+                                }
+                            ),
+                            style={
+                                'padding': '0px', 
+                                'width': '250px',
+                                'height': '40px'
+                            }
+                        )
+                    ],
+                    style={
+                        "justify-content": 'space-evenly',
+                    }
                 )
             ],
             style={
@@ -518,7 +601,7 @@ def rerun_naive(n_clicks):
     Input('rerun-button-greedy', 'n_clicks'),
     prevent_initial_call=True
 )
-def rerun_naive(n_clicks):
+def rerun_greedy(n_clicks):
     set4 = gs.random_points(100,100)
     greedy_tri, total_time = greedy(set4)
 
@@ -549,6 +632,45 @@ def rerun_naive(n_clicks):
     fig.update_layout(showlegend=False)
     
     runtime_text = f"Runtime: {total_time * 1000:.4f} ms"
+    
+    return fig, runtime_text
+
+@app.callback(
+    [Output('graph-5', 'figure'),
+     Output('runtime-text-del', 'children')],
+    Input('rerun-button-del', 'n_clicks'),
+    prevent_initial_call=True
+)
+def rerun_del(n_clicks):
+    set5 = gs.random_points(100,100)
+    del_tri, total_time5 = delaunay(set)
+    fig5 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
+    for triangle in del_tri:
+        x = [triangle[0][0],triangle[1][0],triangle[2][0]]
+        y = [triangle[0][1],triangle[1][1],triangle[2][1]]
+        fig5.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
+
+
+    # update layout
+    fig.update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        hoverdistance=1,
+        width=700,
+        height=500,
+        margin={
+            'l': 0,
+            'r': 0,
+            't': 20,
+            'b': 0,
+        }
+    )
+
+    fig.update_coloraxes(showscale=False)
+    fig.update_layout(showlegend=False)
+    
+    runtime_text = f"Runtime: {total_time5 * 1000:.4f} ms"
     
     return fig, runtime_text
 
