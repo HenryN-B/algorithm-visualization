@@ -11,6 +11,7 @@ import gram_scan as gs
 import time
 import naive_hull as nh
 
+
 total_time = 0
 num = 0 
 hull = []
@@ -20,6 +21,8 @@ def graham_scan(set):
     global hull
     global pts
     global num
+    global graham_scan_done
+    graham_scan_done = False
     start_time = time.perf_counter()
     hull, pts, num = gs.graham_scan(set)
     end_time = time.perf_counter()
@@ -303,6 +306,7 @@ def handle_next_button(graph_figure, n_clicks):
     global hull
     global pts
     global num
+    global graham_scan_done
     if graham_scan_done:
         return graph_figure
     if n_clicks:
@@ -325,6 +329,8 @@ def handle_next_button(graph_figure, n_clicks):
     prevent_initial_call=True
 )
 def rerun_graham_scan(n_clicks):
+    global graham_scan_done
+    graham_scan_done = False
     set = gs.random_points(100, 100)
     hull, total_time, x, y, pX, pY = graham_scan(set)
     
