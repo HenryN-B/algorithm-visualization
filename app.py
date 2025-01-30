@@ -844,7 +844,7 @@ def rerun_greedy(n_clicks):
     fig.update_layout(showlegend=False)
     
     runtime_text = f"Runtime: {total_time * 1000:.4f} ms"
-    weight_text = f"Runtime: {greedy_weight:.0f}"
+    weight_text = f"Weight: {greedy_weight:.0f}"
     
     return fig, runtime_text, weight_text
 
@@ -892,7 +892,7 @@ def rerun_del(n_clicks):
     fig.update_layout(showlegend=False)
     
     runtime_text = f"Runtime: {total_time5 * 1000:.4f} ms"
-    weight_text = f"Runtime: {del_weight:.0f}"
+    weight_text = f"Weight: {del_weight:.0f}"
     
     return fig, runtime_text, weight_text
 
