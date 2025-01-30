@@ -151,8 +151,33 @@ fig.update_layout(
 fig.update_coloraxes(showscale=False)
 fig.update_layout(showlegend=False)
 
-hull_naive, total_time2, x2, y2, pX2, pY2 = naive(set)
+hull_naive, total_time2, x2, y2, pX2, pY2 = incremental(set)
 
+fig3 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
+fig3.add_scatter(x=x2, y=y2, mode='lines+markers',marker_color='white',marker_size=8)
+fig3.add_scatter(x=pX2, y=pY2, mode='markers',marker_color='white',marker_size=4)
+
+# update layout
+fig3.update_layout(
+    template='plotly_dark',
+    plot_bgcolor='rgba(0, 0, 0, 0)',
+    paper_bgcolor='rgba(0, 0, 0, 0)',
+    hoverdistance=1,
+    width=700,
+    height=500,
+    margin={
+        'l': 0,
+        'r': 0,
+        't': 20,
+        'b': 0,
+    }
+)
+
+# hide color bar
+fig3.update_coloraxes(showscale=False)
+fig3.update_layout(showlegend=False)
+
+hull_naive, total_time2, x2, y2, pX2, pY2 = naive(set)
 
 fig2 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
 fig2.add_scatter(x=x2, y=y2, mode='lines+markers',marker_color='white',marker_size=8)
@@ -177,6 +202,11 @@ fig2.update_layout(
 # hide color bar
 fig2.update_coloraxes(showscale=False)
 fig2.update_layout(showlegend=False)
+
+
+
+
+
 
 #greedy 
 greedy_tri, total_time4 = greedy(set)
@@ -383,7 +413,7 @@ app.layout = dbc.Container(
                         # really cool graph
                         dcc.Graph(
                             id='graph-3',  
-                            figure=fig,
+                            figure=fig3,
                             config={
                                 'scrollZoom': True,
                                 'displayModeBar': False,
