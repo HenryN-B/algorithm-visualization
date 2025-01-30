@@ -95,11 +95,11 @@ def greedy(set):
 
 def delaunay(set):
     start_time = time.perf_counter()
-    gram_tri, del_tri = d.triangulate(set)
+    gram_tri, del_tri, hull = d.triangulate(set)
     end_time = time.perf_counter()
     total_time = end_time-start_time
 
-    return del_tri, total_time
+    return del_tri, total_time, hull
 
 
 set = gs.random_points(100, 100)
@@ -182,12 +182,19 @@ fig4.update_coloraxes(showscale=False)
 fig4.update_layout(showlegend=False)
 
 
-del_tri, total_time5 = delaunay(set)
+del_tri, total_time5, hull = delaunay(set)
 fig5 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
 for triangle in del_tri:
     x = [triangle[0][0],triangle[1][0],triangle[2][0]]
     y = [triangle[0][1],triangle[1][1],triangle[2][1]]
     fig5.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
+    
+x = []
+y = []
+for point in hull:
+    x.append(point[0])
+    y.append(point[1])
+fig5.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
 fig5.update_layout(
     template='plotly_dark',
     plot_bgcolor='rgba(0, 0, 0, 0)',
@@ -643,12 +650,18 @@ def rerun_greedy(n_clicks):
 )
 def rerun_del(n_clicks):
     set5 = gs.random_points(100,100)
-    del_tri, total_time5 = delaunay(set5)
+    del_tri, total_time5,hull = delaunay(set5)
     fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
     for triangle in del_tri:
         x = [triangle[0][0],triangle[1][0],triangle[2][0]]
         y = [triangle[0][1],triangle[1][1],triangle[2][1]]
         fig.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
+    x = []
+    y = []
+    for point in hull:
+        x.append(point[0])
+        y.append(point[1])
+    fig.add_scatter(x=x, y=y, mode='lines+markers',marker_color='white',marker_size=8)
 
 
     # update layout

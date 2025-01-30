@@ -91,10 +91,4 @@ def triangulate(pts):
         hull.append(point)  
     triangles_del = [t[:] for t in triangles]
     triangles_del = flip_edges(triangles_del)
-    if triangles == triangles_del:
-        print("FUCK")
-
-
-    return triangles, triangles_del
-
-
+    return triangles, triangles_del, hull
