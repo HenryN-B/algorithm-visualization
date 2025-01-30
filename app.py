@@ -722,7 +722,7 @@ def rerun_naive(n_clicks):
     prevent_initial_call=True
 )
 def rerun_inc(n_clicks):
-    set = gs.random_points(100, 100)
+    set = gs.random_points(10, 100)
     hull_inc, total_time, x, y, pX, pY = incremental(set)
     
     fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')

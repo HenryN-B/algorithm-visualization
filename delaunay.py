@@ -76,11 +76,11 @@ def totalEdgeLength(triangles, hull):
         edgeLength += math.dist(triangles[i][0],triangles[i][1])
         #each triangle shares an edge, because this list does not include the hull. edges are double counted
         edgeLength += math.dist(triangles[i][1],triangles[i][2])
+        edgeLength += math.dist(triangles[i][2],triangles[i][0])
+    edgeLength = edgeLength / 2
     for i in range(1, len(hull)):   #calculate twice the hull length
-        hullEdgeLength += math.dist(hull[i-1],hull[i])
-        hullEdgeLength = hullEdgeLength*2
-    edgeLength = edgeLength+hullEdgeLength
-    return (edgeLength/2)   #divide by two for the correct weight
+        edgeLength += math.dist(hull[i-1],hull[i])
+    return edgeLength   #divide by two for the correct weight
 
 
                     
@@ -105,3 +105,8 @@ def triangulate(pts):
     triangles_del = [t[:] for t in triangles]
     triangles_del = flip_edges(triangles_del)
     return triangles, triangles_del, hull
+
+# pts = [(0,0),(1,1),(1,0)]
+# tri, tdel, hul = triangulate(pts)
+# print(tri, hul, tdel)
+# print(totalEdgeLength(tdel, hul))
