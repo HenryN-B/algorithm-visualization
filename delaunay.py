@@ -69,7 +69,20 @@ def flip_edges(triangles):
 
     return triangles
                             
-                    
+def totalEdgeLength(triangles, hull):
+    edgeLength = 0
+    hullEdgeLength = 0
+    for i in range(len(triangles)):
+        edgeLength += math.dist(triangles[i][0],triangles[i][1])
+        #each triangle shares an edge, because this list does not include the hull. edges are double counted
+        edgeLength += math.dist(triangles[i][1],triangles[i][2])
+    for i in range(1, len(hull)):   #calculate twice the hull length
+        hullEdgeLength += math.dist(hull[i-1],hull[i])
+        hullEdgeLength = hullEdgeLength*2
+    edgeLength = edgeLength+hullEdgeLength
+    return (edgeLength/2)   #divide by two for the correct weight
+
+
                     
   
 
