@@ -12,7 +12,7 @@ import time
 import naive_hull as nh
 import greedy_triangulation as gt
 import delaunay as d
-
+import Incremental as ncr
 
 total_time = 0
 num = 0 
@@ -100,6 +100,27 @@ def delaunay(set):
     total_time = end_time-start_time
 
     return del_tri, total_time, hull
+
+def incremental(set):
+    start_time = time.perf_counter()
+    hull_inc = ncr.incr(set)
+    end_time = time.perf_counter()
+    total_time = end_time-start_time
+    # hull_inc = nh.sort_points_counterclockwise(hull_inc)
+    x = []
+    y = []
+    for i in hull_inc:
+        x.append(i[0])
+        y.append(i[1])
+    x.append(hull_inc[0][0])
+    y.append(hull_inc[0][1])
+    pX = []
+    pY = []
+    for i in set:
+        pX.append(i[0])
+        pY.append(i[1])
+    return hull_inc, total_time, x, y, pX, pY
+    
 
 
 set = gs.random_points(100, 100)
@@ -350,6 +371,69 @@ app.layout = dbc.Container(
                         "justify-content": 'space-evenly',
                     }
                 ),
+                dbc.Col(
+                    [   
+                        html.P(
+                            "Incremental Hull",
+                            style={
+                                'fontSize': '30px'
+                            }
+                            
+                        ),
+                        # really cool graph
+                        dcc.Graph(
+                            id='graph-3',  
+                            figure=fig,
+                            config={
+                                'scrollZoom': True,
+                                'displayModeBar': False,
+                            }
+                        ),
+                        # Button
+                        dbc.Button(
+                            "Re-run with New Points",
+                            id='rerun-button-inc', 
+                            color='primary',
+                            n_clicks=0
+                        ),
+                        dbc.Button(
+                            "Next",
+                            id='next-button-inc',
+                            color='primary',
+                            n_clicks=0
+                        ),
+                        # Runtime 
+                        dbc.Card(
+                            dbc.CardBody(
+                                [
+                                    html.P(
+                                        id="runtime-text-inc",  
+                                        children=f"Runtime: {total_time * 1000:.4f} ms",
+                                        className="card-text",
+                                        style={
+                                            'textAlign': 'center',  
+                                            'fontSize': '20px', 
+                                            'padding': "0px"
+                                        }
+                                    )
+                                ],
+                                style={
+                                    'padding': '0px', 
+                                    'width': '250px',
+                                    'height': '40px'
+                                }
+                            ),
+                            style={
+                                'padding': '0px', 
+                                'width': '250px',
+                                'height': '40px'
+                            }
+                        ),
+                    ],
+                    style={
+                        "justify-content": 'space-evenly',
+                    }
+                ),
                     dbc.Col(
                     [
                         html.P(
@@ -574,6 +658,42 @@ def rerun_graham_scan(n_clicks):
 def rerun_naive(n_clicks):
     set = gs.random_points(100, 100)
     hull_naive, total_time, x, y, pX, pY = naive(set)
+    
+    fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
+    fig.add_scatter(x=x, y=y, mode='lines+markers', marker_color='white', marker_size=8)
+    fig.add_scatter(x=pX, y=pY, mode='markers', marker_color='white', marker_size=4)
+    
+    fig.update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        hoverdistance=1,
+        width=700,
+        height=500,
+        margin={
+            'l': 0,
+            'r': 0,
+            't': 20,
+            'b': 0,
+        }
+    )
+    
+    fig.update_coloraxes(showscale=False)
+    fig.update_layout(showlegend=False)
+    
+    runtime_text = f"Runtime: {total_time * 1000:.4f} ms"
+    
+    return fig, runtime_text
+
+@app.callback(
+    [Output('graph-3', 'figure'),
+     Output('runtime-text-inc', 'children')],
+    Input('rerun-button-inc', 'n_clicks'),
+    prevent_initial_call=True
+)
+def rerun_inc(n_clicks):
+    set = gs.random_points(100, 100)
+    hull_inc, total_time, x, y, pX, pY = incremental(set)
     
     fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
     fig.add_scatter(x=x, y=y, mode='lines+markers', marker_color='white', marker_size=8)

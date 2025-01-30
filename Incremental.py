@@ -22,7 +22,7 @@ def incsub(hull, k):
         next = left_of(hull[i],hull[i+1],k)
         if prev and (not next):
             bottom = i
-        if (not prev) and next:
+        elif (not prev) and next:
             top = i
         prev = next
     return bottom, top
@@ -36,9 +36,23 @@ def incr(pts):
         hull = [pts[0],pts[2],pts[1]]
     for i in range(3, len(pts)):
         bot, top = incsub(hull, pts[i])
-        if top >= bot:
-            hull[bot+1:top] = [pts[i]]
+        if bot == -1 and top == -1:
+            continue
+        if top < bot:
+            hull = hull[:bot+1] + [pts[i]] + hull[top:]
         else:
-            hull[bot + 1:] = [pts[i]]
-            hull[:top] = []
+            hull = hull[:bot+1] + [pts[i]] + hull[top:]
     return hull
+
+
+# def random_points(n, s):
+#     pts = []
+#     while len(pts) < n :
+#         x = random.random() * s
+#         y = random.random() * s
+#         new_point = (x, y)
+#         pts.append(new_point)
+#     return pts 
+
+# set = [[0,0],[1,2],[2,1],[3,7],[4,3]]
+# print(incr(set))
