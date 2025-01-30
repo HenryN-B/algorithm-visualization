@@ -17,30 +17,32 @@ def incsub(hull, k):
     prev = left_of(hull[-1],hull[0], k)
     for i in range(len(hull) - 1):
         next = left_of(hull[i],hull[i+1],k)
-        if prev and not next:
+        if prev and (not next):
             bottom = i
-        if not prev and next:
+        elif (not prev) and next:
             top = i
         prev = next
+    prev = left_of(hull[-2],hull[-1],k)
+    next = left_of(hull[-1],hull[0],k)
+    if prev and (not next):
+        bottom = len(hull) - 1
+    elif (not prev) and next:
+        top = len(hull) - 1
     return bottom, top
 
 def incr(pts):
     pts.sort(key=xcoord)
-    # print(pts, "hi :)")
     hull = [pts[0],pts[1],pts[2]]
-    # print(hull, "heheheheheheheheh")
-    if left_of(pts[0], pts[1], pts[2]) == -1:
+    if not left_of(pts[0], pts[1], pts[2]):
         hull = [pts[0],pts[2],pts[1]]
     for i in range(3, len(pts)):
         bot, top = incsub(hull, pts[i])
         if bot == -1 and top == -1:
             continue
-        elif top < bot:
-            hull = hull[:top+1] + hull[bot:] + [pts[i]]
-        else:
+        if top < bot:
+            hull = hull[top:bot] + [hull[bot]] + [pts[i]]
+        if top > bot:
             hull = hull[:bot+1] + [pts[i]] + hull[top:]
-            # print(hull)
-    # print(hull, "HASUIDHPAWI              UDHP")
     return hull
 
 
