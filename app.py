@@ -210,6 +210,7 @@ fig2.update_layout(showlegend=False)
 
 #greedy 
 greedy_tri, total_time4 = greedy(set)
+greedy_weight = gt.totalEdgeLength(greedy_tri)
 fig4 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
 for line in greedy_tri:
     x = [line[0][0],line[1][0]]
@@ -234,6 +235,7 @@ fig4.update_layout(showlegend=False)
 
 
 del_tri, total_time5, hull = delaunay(set)
+del_weight = d.totalEdgeLength(del_tri,hull)
 fig5 = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
 for triangle in del_tri:
     x = [triangle[0][0],triangle[1][0],triangle[2][0]]
@@ -489,7 +491,32 @@ app.layout = dbc.Container(
                             color='primary',
                             n_clicks=0
                         ),
-                        # Runtime 
+                        dbc.Card(
+                            dbc.CardBody(
+                                [
+                                    html.P(
+                                        id="weight-greedy",  
+                                        children=f"Weight {greedy_weight:.0f}",
+                                        className="card-text",
+                                        style={
+                                            'textAlign': 'center',  
+                                            'fontSize': '20px', 
+                                            'padding': "0px"
+                                        }
+                                    )
+                                ],
+                                style={
+                                    'padding': '0px', 
+                                    'width': '250px',
+                                    'height': '40px'
+                                }
+                            ),
+                            style={
+                                'padding': '0px', 
+                                'width': '250px',
+                                'height': '40px'
+                            }
+                        ),
                         dbc.Card(
                             dbc.CardBody(
                                 [
@@ -545,6 +572,32 @@ app.layout = dbc.Container(
                             id='rerun-button-del', 
                             color='primary',
                             n_clicks=0
+                        ),
+                        dbc.Card(
+                            dbc.CardBody(
+                                [
+                                    html.P(
+                                        id="weight-del",  
+                                        children=f"Weight {del_weight:.0f}",
+                                        className="card-text",
+                                        style={
+                                            'textAlign': 'center',  
+                                            'fontSize': '20px', 
+                                            'padding': "0px"
+                                        }
+                                    )
+                                ],
+                                style={
+                                    'padding': '0px', 
+                                    'width': '250px',
+                                    'height': '40px'
+                                }
+                            ),
+                            style={
+                                'padding': '0px', 
+                                'width': '250px',
+                                'height': '40px'
+                            }
                         ),
                         # Runtime 
                         dbc.Card(
@@ -754,13 +807,15 @@ def rerun_inc(n_clicks):
 
 @app.callback(
     [Output('graph-4', 'figure'),
-     Output('runtime-text-greedy', 'children')],
+     Output('runtime-text-greedy', 'children'),
+     Output('weight-greedy','children')],
     Input('rerun-button-greedy', 'n_clicks'),
     prevent_initial_call=True
 )
 def rerun_greedy(n_clicks):
     set4 = gs.random_points(100,100)
     greedy_tri, total_time = greedy(set4)
+    greedy_weight = gt.totalEdgeLength(greedy_tri)
 
     fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
 
@@ -789,18 +844,21 @@ def rerun_greedy(n_clicks):
     fig.update_layout(showlegend=False)
     
     runtime_text = f"Runtime: {total_time * 1000:.4f} ms"
+    weight_text = f"Runtime: {greedy_weight:.0f}"
     
-    return fig, runtime_text
+    return fig, runtime_text, weight_text
 
 @app.callback(
     [Output('graph-5', 'figure'),
-     Output('runtime-text-del', 'children')],
+     Output('runtime-text-del', 'children'),
+     Output('weight-del', 'children')],
     Input('rerun-button-del', 'n_clicks'),
     prevent_initial_call=True
 )
 def rerun_del(n_clicks):
     set5 = gs.random_points(100,100)
     del_tri, total_time5,hull = delaunay(set5)
+    del_weight = d.totalEdgeLength(del_tri,hull)
     fig = px.imshow(np.zeros(shape=(120, 120, 4)), origin='lower')
     for triangle in del_tri:
         x = [triangle[0][0],triangle[1][0],triangle[2][0]]
@@ -834,8 +892,9 @@ def rerun_del(n_clicks):
     fig.update_layout(showlegend=False)
     
     runtime_text = f"Runtime: {total_time5 * 1000:.4f} ms"
+    weight_text = f"Runtime: {del_weight:.0f}"
     
-    return fig, runtime_text
+    return fig, runtime_text, weight_text
 
 
 if __name__ == '__main__':
