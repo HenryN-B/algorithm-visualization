@@ -26,9 +26,9 @@ def incsub(hull, k):
 
 def incr(pts):
     pts.sort(key=xcoord)
-    print(pts, "hi :)")
+    # print(pts, "hi :)")
     hull = [pts[0],pts[1],pts[2]]
-    print(hull, "heheheheheheheheh")
+    # print(hull, "heheheheheheheheh")
     if left_of(pts[0], pts[1], pts[2]) == -1:
         hull = [pts[0],pts[2],pts[1]]
     for i in range(3, len(pts)):
@@ -40,7 +40,7 @@ def incr(pts):
         else:
             hull = hull[:bot+1] + [pts[i]] + hull[top:]
             # print(hull)
-    print(hull, "HASUIDHPAWI              UDHP")
+    # print(hull, "HASUIDHPAWI              UDHP")
     return hull
 
 
